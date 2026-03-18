@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -40,7 +40,7 @@ public class ImmutableMetrics implements Metrics, Serializable {
 
     protected String id;
     protected String name;
-    protected Map<String, AtomicLong> counts = new ConcurrentHashMap<>();
+    protected Map<String, AtomicLong> counts = new ConcurrentSkipListMap<>();
     protected long durationNs = 0l;
     protected final Map<String, Object> annotations = Collections.synchronizedMap(new LinkedHashMap<>());
     protected final Map<String, ImmutableMetrics> nested = new LinkedHashMap<>();
