@@ -1,0 +1,30 @@
+name: NonDex Flaky Test Check
+
+on:
+  push:
+    branches: ["fix-flaky-graphsonserializer", "main"]
+  workflow_dispatch:
+
+jobs:
+  run-nondex:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: "11"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Build project and dependencies
+        run: mvn clean install -pl tinkergraph-gremlin -am -Drat.skip -Dlicense.skip=true -DskipTests
+
+      - name: Run test
+        run: mvn -pl tinkergraph-gremlin test -Dtest=org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraphGraphSONSerializerV2Test#deserializersTestsMetrics -Drat.skip -Dlicense.skip=true
+
+      - name: Run NonDex on specific test
+        run: mvn -pl tinkergraph-gremlin edu.illinois:nondex-maven-plugin:2.2.1:nondex -Dtest=org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraphGraphSONSerializerV2Test#deserializersTestsMetrics -Drat.skip -Dlicense.skip=true  -DnondexRuns=10
